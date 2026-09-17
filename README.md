@@ -10,8 +10,8 @@ A reproducible comparison of Dijkstra's algorithm and A* on a directed, weighted
 - **120 origin-destination pairs**, evenly divided into short-, medium-, and long-haul groups
 - **200 timed runs per pair per algorithm** in the submitted experiment
 - **100% shortest-path cost agreement** between Dijkstra and A*
-- **A* expanded fewer nodes on 85% of pairs**
-- Mean nodes expanded: **9.325 for Dijkstra vs. 2.392 for A***
+- **A\* expanded fewer nodes on 85% of pairs**
+- Mean nodes expanded: **9.325 for Dijkstra vs. 2.392 for A\***
 
 Runtime differences are intentionally interpreted cautiously: the graph is small and measured times are near Python's timing-noise floor. The more stable finding is that A* reaches the same optimal cost while exploring substantially fewer nodes, especially on medium- and long-haul pairs.
 
@@ -37,7 +37,7 @@ Runtime differences are intentionally interpreted cautiously: the graph is small
 | `tests/` | Toy-graph, real-route, and all-120-pair validation |
 | `data/` | Curated airport nodes, directed edges, and OD pairs |
 | `results/final_200/` | Submitted benchmark results |
-| `portfolio/` | Final report and presentation artifacts |
+| `portfolio/` | Final report and supporting artifact notes |
 
 ## Quick start
 
