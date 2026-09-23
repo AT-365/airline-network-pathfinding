@@ -1,2 +1,2 @@
 count_pairs,runs_per_pair_per_algorithm,pct_cost_equal,median_speedup_mean_time,mean_speedup_mean_time,median_time_saved_ms,mean_time_saved_ms,pct_pairs_astar_faster_mean_time,mean_dijkstra_expanded_nodes,mean_astar_expanded_nodes,median_dijkstra_expanded_nodes,median_astar_expanded_nodes,mean_expanded_nodes_saved_by_astar,median_expanded_nodes_saved_by_astar,pct_pairs_astar_fewer_expansions
-120,200,100.0,1.014320779102951,1.071769477759892,0.0008004998380783945,0.0019441581389401108,51.666666666666664,9.325,2.3916666666666666,9.0,2.0,6.933333333333334,6.0,85.0
+120,200,100.0,1.1730176488811348,2.440450681401014,0.009691384997410069,0.018380664582930233,56.666666666666664,9.325,2.3916666666666666,9.0,2.0,6.933333333333334,6.0,85.0

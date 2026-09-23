@@ -1,7 +1,8 @@
-# Project artifacts
+# Final project artifacts
 
-The final report documents the research question, graph construction, algorithm design, validation method, results, limitations, and future work.
+- `final_report.pdf` - final graded report for the 20-airport experiment
+- Narrated final presentation - published as a `v1.0.0` GitHub release asset because the 30.6 MB file exceeds GitHub's 25 MB browser-upload limit
 
-- `final_report.pdf`
+The report and narrated presentation agree on the experiment's counts and numeric results: 20 airports, 293 directed routes, 120 OD pairs, 200 timing runs per pair and algorithm, 100% shortest-path cost agreement, and approximately 74% fewer mean node expansions for A*.
 
-The executable implementation and tests remain in the repository root so reviewers can inspect and reproduce the work without opening these files.
+The presentation uses the shorter phrase “100% path agreement.” The precise validated claim is **100% shortest-path cost agreement**.
