@@ -1,37 +1,27 @@
 # Airline Network Pathfinding: Dijkstra vs. A*
 
 [![Tests](https://github.com/AT-365/airline-network-pathfinding/actions/workflows/tests.yml/badge.svg)](https://github.com/AT-365/airline-network-pathfinding/actions/workflows/tests.yml)
+[![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A reproducible Python experiment comparing Dijkstra's algorithm and A* search on a directed U.S. airline network. The project models 20 major airports as vertices, historical direct routes as weighted edges, and uses Haversine distance as a geographic heuristic for A*.
+A reproducible Python experiment comparing Dijkstra's algorithm and A* search on a directed U.S. airline network. The project models 20 major airports as vertices, historical direct routes as weighted edges, and geographic distance as an admissible A* heuristic.
 
-**Research Question:** Can heuristic guidance reduce the amount of graph search without sacrificing the optimal route cost?
+> **Research question:** Can heuristic guidance reduce graph-search work without sacrificing optimal route cost?
 
-**Key Finding:** A* expanded 74.35% fewer nodes than Dijkstra on average while maintaining 100% shortest-path cost agreement across all 120 test pairs.
+> **Answer:** Yes. Across 120 origin-destination pairs, A* matched Dijkstra's optimal cost every time while expanding 74.35% fewer nodes on average.
+
+![Directed 20-airport route network](results/final_200/figures/hub_spoke_airline_graph.png)
 
 ## Why This Project Matters
 
-This project demonstrates practical algorithms and optimization skills that employers value:
+This project demonstrates the ability to turn algorithm theory into a tested, reproducible experiment:
 
-- implementing classical graph algorithms from scratch
-- understanding heuristic design and its impact on search performance
-- rigorous experimental design with stratified evaluation
-- honest reporting of results (performance gains and limitations)
-- reproducible science with automated testing and benchmarking
-- clear communication of trade-offs and caveats
-
-## Project Overview
-
-The experiment compares two pathfinding algorithms on a realistic graph:
-
-**Graph:** 20 U.S. airports, 293 directed routes, Haversine-based edge weights
-
-**Algorithms:**
-- **Dijkstra:** Unguided best-first search using a priority queue
-- **A*:** Guided best-first search with Haversine distance heuristic
-
-**Evaluation:** 120 origin-destination pairs (40 short-haul, 40 medium-haul, 40 long-haul), 200 runs per pair per algorithm
-
-**Metrics:** Node expansions, path cost agreement, runtime, expansion reduction
+- implemented Dijkstra and A* from scratch rather than calling library solvers
+- designed an admissible Haversine heuristic for geographic search
+- separated deterministic correctness and search-efficiency evidence from machine-sensitive timing
+- evaluated a stratified sample of short-, medium-, and long-haul routes
+- automated testing, benchmarking, result aggregation, and chart generation
+- communicated conclusions and limitations through code, a written report, and a narrated presentation
 
 ## Verified Results
 
@@ -39,7 +29,7 @@ The experiment compares two pathfinding algorithms on a realistic graph:
 |---|---:|
 | Airport nodes | 20 |
 | Directed routes | 293 |
-| Origin-destination pairs tested | 120 |
+| Origin-destination pairs | 120 |
 | Timing runs per pair, per algorithm | 200 |
 | Shortest-path cost agreement | 100% |
 | Mean nodes expanded by Dijkstra | 9.325 |
@@ -49,35 +39,48 @@ The experiment compares two pathfinding algorithms on a realistic graph:
 | Pairs where A* was faster by mean runtime | 56.7% |
 | Mean Dijkstra/A* runtime ratio | 2.440x |
 
-**Important Note:** Runtime values on small graphs are extremely close to Python's timing-noise floor. The most reliable result is the **74.35% reduction in node expansions**—a fundamental algorithmic advantage that is less sensitive to machine variation.
+The strongest result is the **74.35% reduction in mean node expansions**. Runtime measurements on a 20-node graph are close to Python's timing-noise floor and vary by machine, so they should be interpreted as secondary evidence rather than a universal speed claim.
+
+## Experiment Design
+
+The graph contains 20 U.S. airports and 293 directed historical routes. Edge weights are Haversine distances in kilometers. The 120 test pairs are divided equally into short-, medium-, and long-haul groups by great-circle distance.
+
+For each pair, the experiment:
+
+1. runs Dijkstra and A* once as a warmup;
+2. times each algorithm 200 times;
+3. checks that both algorithms return the same optimal cost;
+4. records path length, node expansions, relaxations, heap pushes, and runtime; and
+5. aggregates overall and haul-category results into CSV files and charts.
+
+A* uses straight-line Haversine distance to the destination as `h(n)`. Because each route edge is weighted by the same geographic-distance model, the heuristic does not overestimate the remaining route cost. This preserves optimality while directing the search toward the destination.
 
 ## What I Built
 
-- **Directed adjacency-list graph model** for airport-route data with Haversine-based weights
-- **Dijkstra implementation** using a binary min-heap priority queue
-- **A* implementation** with f(n) = g(n) + h(n) and Haversine heuristic
-- **Path reconstruction algorithm** with route-cost validation
-- **Instrumentation system** tracking node expansions, relaxations, heap operations, hops, and runtime
-- **Stratified evaluation framework** dividing routes by distance category
-- **Comprehensive test suite** covering toy graphs, real-network pairs, and aggregate benchmark validation
-- **Reproducible outputs** as CSV summaries and Matplotlib visualizations
+- directed adjacency-list graph loader for airport and route CSV data
+- binary-min-heap Dijkstra implementation with path reconstruction
+- A* implementation using `f(n) = g(n) + h(n)`
+- instrumentation for expansions, relaxations, heap pushes, hops, and runtime
+- reproducible experiment runner with equal-third distance stratification
+- seven pytest checks, including one that validates all 120 configured pairs
+- result-processing utilities for current and legacy benchmark formats
+- Matplotlib benchmark charts and a NetworkX network visualization
+- GitHub Actions workflow that runs the test suite on pushes and pull requests
 
-## Technologies & Methods
+## Portfolio Artifacts
 
-- **Python 3.13:** Algorithm implementation, experiment automation, data processing
-- **heapq:** Binary min-heap priority queue operations (both algorithms)
-- **Custom priority-queue helper:** Dijkstra queue abstraction
-- **Haversine formula:** Geographic edge weights and A* heuristic calculation
-- **Matplotlib:** Benchmark charts and network visualization
-- **pandas:** Result aggregation and analysis
-- **NetworkX:** Graph structure and visualization support
-- **pytest:** Correctness and regression testing
-- **CSV and pathlib:** Reproducible file handling and data loading
-- **GitHub Actions:** Automated test execution on every push
+- [Final report](portfolio/final_report.pdf) — methods, results, interpretation, and limitations
+- [Presentation slides](portfolio/presentation_slides.pdf) — browser-friendly 12-slide version
+- [Narrated PowerPoint](https://github.com/AT-365/airline-network-pathfinding/releases/download/v1.0.0/Dijkstra_AStar_Narrated_Presentation.pptx) — approximately 13 minutes; verified `v1.0.0` release asset
+- [Overall result summary](results/final_200/final_results_summary.csv)
+- [Results by haul category](results/final_200/final_results_by_haul.csv)
+- [Pair-level comparison](results/final_200/final_results_merged.csv)
+- [Complete repeated-run results](results/final_200/final_results_all.csv)
+- [Annotated OD-pair workbook](data/od_pairs_annotated.xlsx)
+
+The presentation says “100% path agreement” as a concise slide label. The precisely validated claim is **100% shortest-path cost agreement**; equal-cost routes may still have different node sequences.
 
 ## Quick Start
-
-Clone and set up the environment:
 
 ```bash
 git clone https://github.com/AT-365/airline-network-pathfinding.git
@@ -87,87 +90,74 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-Run the automated tests:
+Run the tests:
 
 ```bash
 python -m pytest -q
 ```
 
-Reproduce the complete benchmark (generates results in a new folder):
+Reproduce the full experiment in a new output folder:
 
 ```bash
 python tools/run_final_experiment.py --runs 200 --outdir results/reproduced_200
 ```
 
-Run one route interactively:
+Run a single route from the command line:
 
 ```bash
-python bench/runner.py --nodes data/nodes.csv --edges data/edges.csv --algo astar --od ATL-SEA
+python bench/runner.py \
+  --nodes data/nodes.csv \
+  --edges data/edges.csv \
+  --algo astar \
+  --od ATL-SEA
 ```
 
-## Experiment Outputs
+Regenerate the supplemental network visualization:
 
-The repository includes the exact May 7 benchmark outputs used in the final report and presentation:
+```bash
+python src/graph/graph_builder.py
+```
 
-- [Overall summary](results/final_200/final_results_summary.csv) - aggregate metrics across all pairs
-- [Results by haul category](results/final_200/final_results_by_haul.csv) - performance broken down by route distance
-- [Merged pair-level comparison](results/final_200/final_results_merged.csv) - Dijkstra vs. A* for each OD pair
-- [All repeated-run results](results/final_200/final_results_all.csv) - complete per-algorithm detailed results
-- [Annotated OD-pair workbook](data/od_pairs_annotated.xlsx) - pair configuration and validation
-- [All charts](results/final_200/figures/) - visualizations from the final report
-
-## Repository Map
+## Repository Guide
 
 | Path | Purpose |
 |---|---|
-| `src/algorithms/` | Dijkstra, A*, Haversine heuristic, path reconstruction |
-| `src/graph/` | CSV graph loader, graph representation, visualization |
-| `src/utils/` | Haversine distance calculator, priority-queue helpers |
-| `tools/` | Complete benchmark runner, result parsing, comparison tools |
-| `bench/` | Interactive command-line route runner |
-| `tests/` | Toy-graph tests, real-route tests, all-pair validation |
-| `data/` | Airport nodes, directed edges, OD pairs, annotated workbook |
-| `results/final_200/` | Report-matching CSV outputs and Matplotlib figures |
-| `portfolio/` | Final graded report and presentation artifacts |
+| `src/algorithms/` | Dijkstra, A*, heuristic, and path reconstruction |
+| `src/graph/` | CSV loader and optional network-visualization script |
+| `src/utils/` | Haversine calculation and priority-queue helpers |
+| `tools/` | Final experiment runner and result-processing utilities |
+| `bench/` | Single-route command-line benchmark runner |
+| `tests/` | Toy-graph, real-network, all-pair, and repository-layout checks |
+| `data/` | Nodes, directed edges, OD pairs, and annotated workbook |
+| `results/final_200/` | Report-matching CSV outputs and figures |
+| `portfolio/` | Final report and presentation slides |
 
-## How to Review This Project
+## Recommended Review Path
 
-For a quick technical review:
+For a concise employer or technical review:
 
-1. Read this README.
-2. Review [`src/algorithms/dijkstra.py`](src/algorithms/dijkstra.py) and [`src/algorithms/astar.py`](src/algorithms/astar.py).
-3. Inspect [`src/algorithms/heuristics.py`](src/algorithms/heuristics.py) to see Haversine distance calculation.
-4. Review [`tests/test_real_graph.py`](tests/test_real_graph.py) to understand validation approach.
-5. Examine [`results/final_200/final_results_summary.csv`](results/final_200/final_results_summary.csv) for aggregate results.
-6. View the visualizations in [`results/final_200/figures/`](results/final_200/figures/).
-7. Read [`portfolio/final_report.pdf`](portfolio/final_report.pdf) for complete analysis.
+1. Start with the [final report](portfolio/final_report.pdf) or [presentation slides](portfolio/presentation_slides.pdf).
+2. Review [`dijkstra.py`](src/algorithms/dijkstra.py), [`astar.py`](src/algorithms/astar.py), and [`heuristics.py`](src/algorithms/heuristics.py).
+3. Inspect [`test_real_graph.py`](tests/test_real_graph.py), especially the all-120-pair validation.
+4. Open the [summary CSV](results/final_200/final_results_summary.csv) and [report figures](results/final_200/figures/).
+5. Re-run the tests or benchmark using the commands above.
 
-For the presentation: Download [`portfolio/`](portfolio/) and open the narrated PowerPoint (`.ppsx`) in desktop PowerPoint to hear the 15-minute presentation audio.
+## Key Takeaways
 
-## What I Learned
+- **Correctness and efficiency are different questions.** Both algorithms returned the same optimal costs, but A* reached them with substantially fewer expansions.
+- **A useful heuristic can reduce search work.** Haversine distance focused the search without giving up optimality.
+- **Timing requires context.** On this small graph, process and machine noise can outweigh very short runtime differences; expansion counts are more stable.
+- **Route length changes the value of guidance.** A* expanded fewer nodes on every medium- and long-haul pair in the saved experiment, while the advantage was less consistent on short routes.
+- **Reproducibility strengthens a portfolio claim.** The repository includes source data, tests, raw results, summaries, figures, and the final academic artifacts.
 
-This project taught me important lessons about algorithmic design and honest experimental evaluation:
+## Project Context and Data Note
 
-- **Heuristic quality directly impacts search efficiency, but guarantees matter.** A* is faster when h(n) is admissible (never overestimates), but a poor heuristic can make it slower than Dijkstra. Haversine distance worked well because it's a valid lower bound on actual travel distance.
+This graduate project was completed for **CSCI 7432 — Algorithms and Data Structures**. The final report and presentation are dated May 7, 2026.
 
-- **Small graphs expose timing noise.** On a 20-node network, individual millisecond measurements are unreliable. The node-expansion metric is far more stable and informative—it measures algorithmic efficiency independent of machine conditions.
-
-- **Stratified evaluation reveals hidden patterns.** Breaking results into short-, medium-, and long-haul categories showed that A*'s advantage is stronger on longer routes. A uniform average would have hidden this insight.
-
-- **100% agreement on one metric doesn't mean the algorithms are equivalent.** Both Dijkstra and A* found optimal paths, but A* required 74% fewer node expansions. The choice of metric completely changes the story.
-
-## Project Context
-
-This project was completed for **CSCI 7242 — Algorithm Design and Analysis** as a graduate computer science capstone. It combines theoretical algorithm knowledge with practical implementation and rigorous experimental methodology.
-
-The data is sourced from historical OpenFlights records and is used for educational purposes only. The network is static and not current; results should not be interpreted as live route-planning advice.
-
-## Data Note
-
-The airline network is a static experimental sample derived from historical OpenFlights airport and route records. It is not a current airline schedule. The results should not be interpreted as live route-planning advice or predictions about actual flight times.
+The network is a static educational sample derived from historical OpenFlights airport and route records. It is not a current airline schedule and should not be used for live route planning or travel-time predictions.
 
 ## Author
 
-Autenia Murray  
+**Autenia Murray**  
 M.S. Computer Science candidate, Data & Knowledge Systems  
 Georgia Southern University

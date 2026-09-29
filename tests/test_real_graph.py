@@ -12,6 +12,8 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.algorithms.astar import shortest_path_astar, shortest_path_astar_with_stats
 from src.algorithms.dijkstra import shortest_path, shortest_path_with_stats
 from src.graph.loader import load_graph
+from src.graph.graph_builder import EDGES_CSV as GRAPH_BUILDER_EDGES
+from src.graph.graph_builder import NODES_CSV as GRAPH_BUILDER_NODES
 
 
 def resolve_project_path(env_name: str, default_name: str) -> Path:
@@ -25,6 +27,14 @@ def resolve_project_path(env_name: str, default_name: str) -> Path:
 NODES = resolve_project_path("NODES_CSV", "data/nodes.csv")
 EDGES = resolve_project_path("EDGES_CSV", "data/edges.csv")
 OD_PAIRS = resolve_project_path("OD_PAIRS_TXT", "data/od_pairs.txt")
+
+
+def test_graph_builder_uses_repository_data_files():
+    """Prevent the optional visualization script from drifting from the repo layout."""
+    assert GRAPH_BUILDER_NODES == PROJECT_ROOT / "data" / "nodes.csv"
+    assert GRAPH_BUILDER_EDGES == PROJECT_ROOT / "data" / "edges.csv"
+    assert GRAPH_BUILDER_NODES.is_file()
+    assert GRAPH_BUILDER_EDGES.is_file()
 
 
 @pytest.mark.skipif(not (NODES.exists() and EDGES.exists()), reason="nodes.csv/edges.csv not found")
