@@ -71,7 +71,7 @@ A* uses straight-line Haversine distance to the destination as `h(n)`. Because e
 
 - [Final report](portfolio/final_report.pdf) — methods, results, interpretation, and limitations
 - [Presentation slides](portfolio/presentation_slides.pdf) — browser-friendly 12-slide version
-- Narrated PowerPoint — approximately 13 minutes; intended for the `v1.0.0` GitHub release
+- [Narrated PowerPoint](https://github.com/AT-365/airline-network-pathfinding/releases/download/v1.0.0/Dijkstra_AStar_Narrated_Presentation.pptx) — approximately 13 minutes; verified `v1.0.0` release asset
 - [Overall result summary](results/final_200/final_results_summary.csv)
 - [Results by haul category](results/final_200/final_results_by_haul.csv)
 - [Pair-level comparison](results/final_200/final_results_merged.csv)
